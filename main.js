@@ -32,12 +32,12 @@ async function work() {
 
     //Create an intial template and the concat the provided body to it
     //TODO: add figma link
-    const template = `
-    [Jira](${jiraBaseUrl}/${ticketNumber})
+    const template = `[Jira](${jiraBaseUrl}/${ticketNumber})
 
     ---
-    
+
     `;
+
     const finalBody = template.concat(body);
     console.log(finalBody);
 
