@@ -8,20 +8,22 @@ Inside your `.github/workflows/workflow.yml` file:
 
 ```yaml
 steps:
-  - uses: riskledger/update-pr-description@dev
+  - uses: AbbasMathiew/update-pr-description@main
     with:
       body: ${{ description }} # The text you wish to overwrite your Pull Request description with, can be a variable or a string
       token: ${{ secrets.GITHUB_TOKEN }}
+      jiraBaseUrl: https://example.atlassian.net/browse
 ```
 
 ## Arguments
 
-This action currently supports two inputs from the user: `body` and `token`. These inputs, along with their descriptions and usage contexts, are listed in the table below:
+This action currently supports three inputs from the user: `body`, `token`, and `jiraBaseUrl`. These inputs, along with their descriptions and usage contexts, are listed in the table below:
 
 |  Input  |                                                 Description                                                 |   Usage    |
 | :-----: | :---------------------------------------------------------------------------------------------------------: | :--------: |
 | `body`  |                      The text you wish to overwrite your Pull Request description with                      | _Required_ |
 | `token` | Your Github access token, which will already be available within your workflow without any additional setup | _Required_ |
+| `jiraBaseUrl` | The Jira base url up until /ticket-number  | _Required_ |
 
 ## License
 
