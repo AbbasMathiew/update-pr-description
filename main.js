@@ -1,7 +1,8 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 
-
+//TODO: think about preserving the current PR body, the input body and adding
+//the jira, figma and other links
 async function work() {
   try {
     //Init input values
