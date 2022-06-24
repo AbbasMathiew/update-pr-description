@@ -12299,46 +12299,61 @@
     const core = __nccwpck_require__(6024);
     const github = __nccwpck_require__(5016);
 
-    try {
-      work()
-    } catch (error) {
-      core.setFailed(error.message);
-    }
 
     async function work() {
-      const token = core.getInput('token', { required: true });
-      const body = core.getInput('body', { required: true });
-      const jiraBaseUrl = core.getInput('jiraBaseUrl', { required: true });
+      try {
+        const token = core.getInput('token', { required: true });
+        const body = core.getInput('body', { required: true });
+        const jiraBaseUrl = core.getInput('jiraBaseUrl', { required: true });
 
-      const [repoOwner, repoName] = process.env.GITHUB_REPOSITORY.split('/');
-      const githubContext = github.context;
-      const githubContextPayload = githubContext.payload;
-      const prNum = githubContextPayload.pull_request.number;
-      const octokit = github.getOctokit(token);
+        const [repoOwner, repoName] = process.env.GITHUB_REPOSITORY.split('/');
+        const githubContext = github.context;
+        const githubContextPayload = githubContext.payload;
+        const prNum = githubContextPayload.pull_request.number;
+        const octokit = github.getOctokit(token);
 
-      console.log(githubContext);
-
-      const prInfo = await octokit.rest.pulls.get({
-        owner: repoOwner,
-        repo: repoName,
-        pull_number: prNum,
-      });
-
-      console.log(prInfo);
-
-      const [branchType, ticketNumber] = branchName.split('/');
+        const [branchType, ticketNumber] = branchName.split('/');
 
 
-      const template = `
+        const template = `
   [Jira](${jiraBaseUrl}/${ticketNumber})
   
   ---
   
   `;
 
-      const finalBody = template.concat(body);
+        const finalBody = template.concat(body);
 
-      console.log(finalBody);
+        console.log(finalBody);
+
+        octokit.rest.pulls.update({
+          owner: repoOwner,
+          repo: repoName,
+          body: finalBody,
+          pull_number: prNum,
+        });
+      }
+
+    //To get more details about the PR
+    const prInfo = await octokit.rest.pulls.get({
+        owner: repoOwner,
+        repo: repoName,
+        pull_number: prNum,
+      });
+
+      const branchName = prInfo.data.head.ref;
+
+      //Split the branch name on the '/' char to get the ticket number
+      const [branchType, ticketNumber] = branchName.split('/');
+
+      //TODO: add figma link
+      const template = `
+    [Jira](${jiraBaseUrl}/${ticketNumber})
+
+    ---
+    
+    `;
+
 
       octokit.rest.pulls.update({
         owner: repoOwner,
@@ -12346,7 +12361,12 @@
         body: finalBody,
         pull_number: prNum,
       });
+    } catch (error) {
+      core.setFailed(error.message);
     }
+  }
+
+work()
 
 
 
@@ -12354,9 +12374,8 @@
 
 
 
-  })();
+})();
 
-  module.exports = __webpack_exports__;
-  /******/
-})()
+module.exports = __webpack_exports__;
+/******/ }) ()
   ;
