@@ -11,6 +11,9 @@ inputs:
   jiraBaseUrl:
     description: The base jira url for the project example https://example.atlassian.net/browse
     required: true
+  jiraProjectKey:
+    description: The jira project key, usually prefixing the ticket number example; EXM in EXM-123
+    required: true
 
 runs:
   using: node12

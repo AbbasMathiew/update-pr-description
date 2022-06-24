@@ -9,6 +9,7 @@ async function work() {
     const token = core.getInput('token', { required: true });
     const body = core.getInput('body', { required: true });
     const jiraBaseUrl = core.getInput('jiraBaseUrl', { required: true });
+    const jiraProjectKey = core.getInput('jiraProjectKey', { required: true })
 
     //Init other useful values
     const [repoOwner, repoName] = process.env.GITHUB_REPOSITORY.split('/');
@@ -29,12 +30,22 @@ async function work() {
     //Get the branch name and split it 
     //on '/' char to get the ticket number
     const branchName = prInfo.data.head.ref;
-    const [branchType, ticketNumber] = branchName.split('/');
+    const [branchType, branchLabel] = branchName.split('/');
+
+    //Split the branch label at '-' so we can extract the ticket number
+    const branchLabelList = branchLabel.split('-');
+
+    //Find the jiraProjectKey in the list, and the item after it should be the ticket number 
+    const keyIndex = branchLabelList.indexOf(jiraProjectKey);
+    const ticketNumber = branchLabelList[keyIndex + 1];
+
+    //Concat the two values
+    const projectKeyAndNumber = `${jiraProjectKey}-${ticketNumber}`
 
     //Create an intial template and the concat the provided body to it
     //TODO: add figma link
     const template = `
-[Jira](${jiraBaseUrl}/${ticketNumber})
+[Jira](${jiraBaseUrl}/${projectKeyAndNumber})
 
 ---
 
